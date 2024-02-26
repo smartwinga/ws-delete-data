@@ -143,12 +143,12 @@
     <p>Use this form to submit your Data deletion request to WingaSmart. 
       You can also instantly delete your data from the 
       WingaSmart app by going to Menu &gt;&gt; Delete Account.</p>
-    <form id="dataDeletionForm">
+    <form id="dataDeletionForm" onsubmit="submitForm(event)">
       <label for="phoneNumber">Phone Number:</label>
       <input type="text" id="phoneNumber" name="phoneNumber" required />
       <label for="email">Email:</label>
       <input type="email" id="email" name="email" required />
-      <input type="submit" value="Submit" onclick="submitForm(event)">
+      <input type="submit" value="Submit">
     </form>
     <div id="response"></div>
     <div id="responsep"></div>
