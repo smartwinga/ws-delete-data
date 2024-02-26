@@ -3,148 +3,138 @@
 <head>
   <title>Request Data Deletion</title>
   <style>
-.container {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 30px;
-  background-color: #f7f7f7;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-}
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 30px;
+      background-color: #f7f7f7;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
 
-h1 {
-  text-align: center;
-  color: #333;
-  font-size: 24px;
-  margin-bottom: 20px;
-}
+    h1 {
+      text-align: center;
+      color: #333;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
 
-label {
-  display: block;
-  font-size: 18px;
-  color: #555;
-  margin-bottom: 10px;
-}
+    label {
+      display: block;
+      font-size: 18px;
+      color: #555;
+      margin-bottom: 10px;
+    }
 
-input[type="text"],
-input[type="email"] {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 16px;
-}
+    input[type="text"],
+    input[type="email"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
 
-input[type="submit"] {
-  width: 100%;
-  padding: 15px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 18px;
-}
+    input[type="submit"] {
+      width: 100%;
+      padding: 15px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 18px;
+    }
 
-#response {
-  margin-top: 20px;
-  padding: 15px;
-  text-align: center;
-  font-weight: bold;
-  color: #4CAF50;
-  background-color: #f0f8ff;
-  border-radius: 5px;
-}
+    #response {
+      margin-top: 20px;
+      padding: 15px;
+      text-align: center;
+      font-weight: bold;
+      color: #4CAF50;
+      background-color: #f0f8ff;
+      border-radius: 5px;
+    }
 
-#responsep {
-  margin-top: 20px;
-  padding: 15px;
-  text-align: center;
-  font-size: 18px;
-  color: #555;
-  background-color: #f0f0f0;
-  border-radius: 5px;
-}
+    #responsep {
+      margin-top: 20px;
+      padding: 15px;
+      text-align: center;
+      font-size: 18px;
+      color: #555;
+      background-color: #f0f0f0;
+      border-radius: 5px;
+    }
 
-.loader {
-  border: 6px solid #3498db;
-  border-top: 6px solid #f3f3f3;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  animation: spin 1s linear infinite;
-  margin: 0 auto;
-  margin-top: 30px;
-}
+    .loader {
+      border: 6px solid #3498db;
+      border-top: 6px solid #f3f3f3;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+      margin-top: 30px;
+    }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
   <script>
-function submitForm(event) {
-  event.preventDefault();
+    emailjs.init("yYFWT5mdz9D2w_hAW");
 
-  var form = document.getElementById("dataDeletionForm");
-  var phoneNumberInput = document.getElementById("phoneNumber");
-  var emailInput = document.getElementById("email");
+    function submitForm(event) {
+      event.preventDefault();
 
-  var phoneNumber = phoneNumberInput.value.trim();
-  var email = emailInput.value.trim();
+      var phoneNumberInput = document.getElementById("phoneNumber").value.trim();
+      var emailInput = document.getElementById("email").value.trim();
 
-  if (!validatePhoneNumber(phoneNumber)) {
-    phoneNumberInput.classList.add("error");
-    return;
-  } else {
-    phoneNumberInput.classList.remove("error");
-  }
+      if (!validatePhoneNumber(phoneNumberInput)) {
+        showError("Please enter a valid phone number.");
+        return;
+      }
 
-  if (!validateEmail(email)) {
-    emailInput.classList.add("error");
-    return;
-  } else {
-    emailInput.classList.remove("error");
-  }
+      if (!validateEmail(emailInput)) {
+        showError("Please enter a valid email address.");
+        return;
+      }
 
-  var formData = {
-    phoneNumber: phoneNumber,
-    email: email
-  };
+      var templateParams = {
+        phoneNumber: phoneNumberInput,
+        email: emailInput
+      };
 
-  emailjs.send("service_xxx","template_xxx", formData)
-    .then(function(response) {
-       console.log("SUCCESS. status=%d, text=%s", response.status, response.text);
-       document.getElementById("response").innerHTML = "Data deletion request sent successfully.";
-             document.getElementById("responsep").innerHTML = "Our staff will process your request in the next 48 hours and get back to you once done.";
-    }, function(err) {
-       console.log("FAILED. error=", err);
-       document.getElementById("response").innerHTML = "Error: " + err + ". Please try again.";
-    });
+      document.getElementById("loader").style.display = "block";
 
-  document.getElementById("loader").style.display = "block";
-}
+      emailjs.send("service_rxv5bo1", "template_9864hqj", templateParams)
+        .then(function(response) {
+          document.getElementById("loader").style.display = "none";
+          document.getElementById("response").innerText = "Data deletion request sent successfully.";
+          document.getElementById("responsep").innerText = "Our staff will process your request in the next 48 hours and get back to you once done.";
+        }, function(error) {
+          document.getElementById("loader").style.display = "none";
+          showError("Error occurred while sending the request. Please try again later.");
+        });
+    }
 
-function validatePhoneNumber(phoneNumber) {
-  // Phone number should be 10 digits and may contain only numbers
-  var phoneNumberPattern = /^\d{10}$/;
-  return phoneNumberPattern.test(phoneNumber);
-}
+    function validatePhoneNumber(phoneNumber) {
+      var phoneNumberPattern = /^\d{10}$/;
+      return phoneNumberPattern.test(phoneNumber);
+    }
 
-function validateEmail(email) {
-  // Email validation using regular expression
-  var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailPattern.test(email);
-}
+    function validateEmail(email) {
+      var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailPattern.test(email);
+    }
 
-  </script>
-  <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
-  <script type="text/javascript">
-    (function(){
-      emailjs.init("user_xxx");
-    })();
+    function showError(message) {
+      document.getElementById("response").innerText = "Error:";
+      document.getElementById("responsep").innerText = message;
+    }
   </script>
 </head>
 <body>
@@ -152,8 +142,8 @@ function validateEmail(email) {
     <h1>WingaSmart Data Deletion Request</h1>
     <p>Use this form to submit your Data deletion request to WingaSmart. 
       You can also instantly delete your data from the 
-      WingaSmart app by going to Menu >> Delete Account.</p>
-    <form id="dataDeletionForm" method="post">
+      WingaSmart app by going to Menu &gt;&gt; Delete Account.</p>
+    <form id="dataDeletionForm">
       <label for="phoneNumber">Phone Number:</label>
       <input type="text" id="phoneNumber" name="phoneNumber" required />
       <label for="email">Email:</label>
