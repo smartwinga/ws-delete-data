@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Request Data Deletion</title>
+  <style>
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 30px;
+  background-color: #f7f7f7;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  font-size: 18px;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+input[type="text"],
+input[type="email"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+input[type="submit"] {
+  width: 100%;
+  padding: 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+#response {
+  margin-top: 20px;
+  padding: 15px;
+  text-align: center;
+  font-weight: bold;
+  color: #4CAF50;
+  background-color: #f0f8ff;
+  border-radius: 5px;
+}
+
+#responsep {
+  margin-top: 20px;
+  padding: 15px;
+  text-align: center;
+  font-size: 18px;
+  color: #555;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+}
+
+.loader {
+  border: 6px solid #3498db;
+  border-top: 6px solid #f3f3f3;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+  margin-top: 30px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+  </style>
+  <script>
+function submitForm(event) {
+  event.preventDefault();
+
+  var form = document.getElementById("dataDeletionForm");
+  var phoneNumberInput = document.getElementById("phoneNumber");
+  var emailInput = document.getElementById("email");
+
+  var phoneNumber = phoneNumberInput.value.trim();
+  var email = emailInput.value.trim();
+
+  if (!validatePhoneNumber(phoneNumber)) {
+    phoneNumberInput.classList.add("error");
+    return;
+  } else {
+    phoneNumberInput.classList.remove("error");
+  }
+
+  if (!validateEmail(email)) {
+    emailInput.classList.add("error");
+    return;
+  } else {
+    emailInput.classList.remove("error");
+  }
+
+  var formData = new FormData(form);
+
+  var xhr = new XMLHttpRequest();
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4) {
+      if (xhr.status === 200) {
+        document.getElementById("response").innerHTML = "Data deletion request sent successfully.";
+        document.getElementById("responsep").innerHTML = "Our staff will process yous request in the next 48 hours and get back to you once dene.";
+      } else {
+        document.getElementById("response").innerHTML = "Error: " + xhr.status + ". Please try again.";
+      }
+
+      document.getElementById("loader").style.display = "none";
+    }
+  };
+
+  xhr.open("POST", form.action, true);
+  xhr.send(formData);
+
+  document.getElementById("loader").style.display = "block";
+}
+
+function validatePhoneNumber(phoneNumber) {
+  // Phone number should be 10 digits and may contain only numbers
+  var phoneNumberPattern = /^\d{10}$/;
+  return phoneNumberPattern.test(phoneNumber);
+}
+
+function validateEmail(email) {
+  // Email validation using regular expression
+  var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailPattern.test(email);
+}
+
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h1>WingaSmart Data Deletion Request</h1>
+    <p>Use this form to submit your Data deletion request to WingaSmart. 
+      You can also instantly delete your data from the 
+      WingaSmart app by going to Menu >> Delete Account.</p>
+    <form id="dataDeletionForm" method="post" action="delete_request.php">
+      <label for="phoneNumber">Phone Number:</label>
+      <input type="text" id="phoneNumber" name="phoneNumber" required />
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required />
+      <input type="submit" value="Submit" onclick="submitForm(event)">
+    </form>
+    <div id="response"></div>
+    <div id="responsep"></div>
+    <div id="loader" class="loader" style="display: none;"></div>
+  </div>
+</body>
+</html>
