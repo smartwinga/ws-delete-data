@@ -109,24 +109,20 @@ function submitForm(event) {
     emailInput.classList.remove("error");
   }
 
-  var formData = new FormData(form);
-
-  var xhr = new XMLHttpRequest();
-  xhr.onreadystatechange = function() {
-    if (xhr.readyState === 4) {
-      if (xhr.status === 200) {
-        document.getElementById("response").innerHTML = "Data deletion request sent successfully.";
-        document.getElementById("responsep").innerHTML = "Our staff will process yous request in the next 48 hours and get back to you once dene.";
-      } else {
-        document.getElementById("response").innerHTML = "Error: " + xhr.status + ". Please try again.";
-      }
-
-      document.getElementById("loader").style.display = "none";
-    }
+  var formData = {
+    phoneNumber: phoneNumber,
+    email: email
   };
 
-  xhr.open("POST", form.action, true);
-  xhr.send(formData);
+  emailjs.send("service_xxx","template_xxx", formData)
+    .then(function(response) {
+       console.log("SUCCESS. status=%d, text=%s", response.status, response.text);
+       document.getElementById("response").innerHTML = "Data deletion request sent successfully.";
+             document.getElementById("responsep").innerHTML = "Our staff will process your request in the next 48 hours and get back to you once done.";
+    }, function(err) {
+       console.log("FAILED. error=", err);
+       document.getElementById("response").innerHTML = "Error: " + err + ". Please try again.";
+    });
 
   document.getElementById("loader").style.display = "block";
 }
@@ -144,6 +140,12 @@ function validateEmail(email) {
 }
 
   </script>
+  <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
+  <script type="text/javascript">
+    (function(){
+      emailjs.init("user_xxx");
+    })();
+  </script>
 </head>
 <body>
   <div class="container">
@@ -151,7 +153,7 @@ function validateEmail(email) {
     <p>Use this form to submit your Data deletion request to WingaSmart. 
       You can also instantly delete your data from the 
       WingaSmart app by going to Menu >> Delete Account.</p>
-    <form id="dataDeletionForm" method="post" action="delete_request.php">
+    <form id="dataDeletionForm" method="post">
       <label for="phoneNumber">Phone Number:</label>
       <input type="text" id="phoneNumber" name="phoneNumber" required />
       <label for="email">Email:</label>
